@@ -1,0 +1,44 @@
+<!doctype html>
+<html lang="pt-BR" xmlns:th="http://www.thymeleaf.org">
+<head>
+  <meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Herbário da Apotecária — Catálogo</title>
+  <link rel="stylesheet" th:href="@{/css/style.css}" href="/css/style.css">
+</head>
+<body>
+<header class="topbar"><div class="wrap topbar-inner">
+  <a class="brand" th:href="@{/}"><span class="brand-mark">H</span><span>HERBÁRIO <small>DA APOTECÁRIA</small></span></a>
+  <nav><a class="nav-link current" th:href="@{/}">Coleção</a><a class="button button-light" th:href="@{/plantas/nova}">Adicionar planta <span aria-hidden="true">＋</span></a></nav>
+</div></header>
+<main>
+  <section class="hero"><div class="wrap hero-inner">
+    <div class="hero-copy"><span class="eyebrow">UM ARQUIVO BOTÂNICO PARTICULAR</span>
+      <h1>Um jardim de <em>descobertas.</em></h1>
+      <p>Registre plantas, observe suas características e reúna suas descobertas em um só lugar.</p>
+      <form class="search-form" th:action="@{/}" method="get" role="search">
+        <label class="sr-only" for="busca">Pesquisar por nome comum ou científico</label>
+        <input id="busca" name="busca" type="search" th:value="${busca}" placeholder="Nome comum ou científico…" maxlength="150">
+        <button type="submit">Pesquisar <span aria-hidden="true">↗</span></button>
+      </form>
+      <span class="hero-note">Da curiosidade ao conhecimento, uma planta por vez.</span>
+    </div>
+    <div class="hero-art" aria-hidden="true"><span class="art-frame"></span><img class="hero-poster" th:src="@{/media/apotecaria-botanica.webp}" src="/media/apotecaria-botanica.webp" alt=""><img class="hero-mini" th:src="@{/media/maomao-folha.png}" src="/media/maomao-folha.png" alt=""><span class="art-caption">O JARDIM DA APOTECÁRIA · VOL. 01</span></div>
+  </div></section>
+  <section class="field-notes wrap" aria-label="Notas do herbário"><div class="field-note"><span class="note-index">01 / OBSERVAR</span><strong>Cada folha tem uma história.</strong><span>Da curiosidade nasce a descoberta.</span></div><div class="field-note image-note"><img th:src="@{/media/maomao-cogumelo.png}" src="/media/maomao-cogumelo.png" alt="" loading="lazy"><div><span class="note-index">02 / INVESTIGAR</span><strong>Nem tudo é o que parece.</strong><span>Leia as notas antes de tocar.</span></div></div><div class="field-note"><span class="note-index">03 / REGISTRAR</span><strong>Seu próprio caderno botânico.</strong><a th:href="@{/plantas/nova}">Fazer uma anotação ↗</a></div></section>
+  <section class="collection wrap">
+    <div th:if="${mensagem}" class="notice" role="status" th:text="${mensagem}"></div>
+    <div class="section-heading"><div><span class="eyebrow dark">O ACERVO</span><h2 th:text="${busca.isEmpty() ? 'Plantas da coleção' : 'Resultados da pesquisa'}">Plantas da coleção</h2></div><span class="count" th:text="${plantas.size()} + ' registros'">0 registros</span></div>
+    <p class="search-summary" th:if="${!busca.isEmpty()}">Busca por <strong th:text="${busca}">nome</strong> · <a th:href="@{/}">Limpar pesquisa</a></p>
+    <div class="grid" th:if="${!plantas.isEmpty()}">
+      <a class="plant-card" th:each="planta : ${plantas}" th:href="@{/plantas/{id}(id=${planta.id})}">
+        <span class="card-top"><span class="card-number" th:text="${'Nº ' + planta.id}">Nº 01</span><span class="card-icon" aria-hidden="true">✣</span></span>
+        <span class="card-portrait" aria-hidden="true"><img th:if="${planta.imagem != null and !planta.imagem.isEmpty()}" th:src="${planta.imagem}" alt="Imagem de uma planta" loading="lazy"><img th:unless="${planta.imagem != null and !planta.imagem.isEmpty()}" th:src="@{/media/maomao-ervas.png}" src="/media/maomao-ervas.png" alt="" loading="lazy"></span>
+        <span class="card-content"><span class="card-category" th:text="${planta.tipo}">Categoria</span><strong th:text="${planta.nome}">Camomila</strong><i th:text="${#strings.isEmpty(planta.nomeCientifico) ? 'Nome científico não informado' : planta.nomeCientifico}">Nome científico</i></span>
+        <span class="card-bottom"><span th:if="${planta.toxicidade == 'Alta'}" class="poison-label">VENENO ABSOLUTO</span><span th:unless="${planta.toxicidade == 'Alta'}" th:text="${'Toxicidade: ' + planta.toxicidade}">Toxicidade</span><span class="arrow" aria-hidden="true">↗</span></span>
+      </a>
+    </div>
+    <div class="empty" th:if="${plantas.isEmpty()}"><div class="empty-copy"><img class="empty-mascot" th:src="@{/media/maomao-flores.png}" src="/media/maomao-flores.png" alt="" loading="lazy"><h3 th:text="${busca.isEmpty() ? 'Seu herbário começa aqui' : 'Nenhuma planta encontrada'}">Seu herbário começa aqui</h3><p th:text="${busca.isEmpty() ? 'Cadastre a primeira planta para abrir sua coleção.' : 'Tente outro nome comum ou científico.'}">Cadastre uma planta.</p><a class="button button-dark" th:if="${busca.isEmpty()}" th:href="@{/plantas/nova}">Cadastrar primeira planta</a><a class="button button-dark" th:unless="${busca.isEmpty()}" th:href="@{/}">Ver toda a coleção</a></div><div class="empty-scene" aria-hidden="true"></div></div>
+  </section>
+</main>
+<footer class="footer"><div class="wrap footer-inner"><span>HERBÁRIO DA APOTECÁRIA</span><span>© 2026 Catharine Toso Taques · Um catálogo de estudo · Informações não substituem orientação especializada.</span></div></footer>
+</body></html>
