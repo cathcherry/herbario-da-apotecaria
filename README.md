@@ -1,237 +1,405 @@
-# Herbário da Apotecária
+# 🌿 Herbário da Apotecária
 
-## Sobre o projeto
+O **Herbário da Apotecária** é uma aplicação web para criar e organizar uma coleção digital de plantas.
 
-O **Herbário da Apotecária** é uma aplicação web para cadastrar e consultar plantas. A ideia surgiu do tema **Planta** proposto para o trabalho de integração e da atmosfera de *Diários de uma Apotecária*: um caderno de observações botânicas com plantas medicinais, aromáticas e tóxicas.
+A aplicação permite cadastrar espécies, armazenar informações botânicas, pesquisar plantas pelo nome, adicionar imagens e manter os registros salvos em um banco de dados MySQL.
 
-O site permite montar uma coleção própria. É possível cadastrar uma planta, pesquisar pelo nome comum ou científico, abrir o registro completo, editar as informações e excluir um registro. Cada item fica guardado no MySQL, então os dados continuam disponíveis depois que a aplicação é fechada e aberta novamente.
+O projeto nasceu como um trabalho acadêmico de desenvolvimento web com o tema **Plantas**. A identidade visual foi inspirada na atmosfera de *Diários de uma Apotecária*, especialmente na ideia de um caderno de observações sobre plantas, ervas e seus diferentes usos.
 
-O projeto foi pensado para mostrar, em uma aplicação pequena, as quatro partes avaliadas no trabalho: banco de dados, conexão com o banco, interface e programação.
+> **Esta é a versão 1.0 do projeto**, originalmente desenvolvida como trabalho acadêmico. O Herbário continua em desenvolvimento e está sendo expandido para funcionar como um caderno botânico digital mais completo.
 
-## O que a aplicação faz
+---
 
-Cada registro pode ter:
+## ✦ Funcionalidades
 
-- nome comum;
-- nome científico;
-- categoria;
-- nível de toxicidade;
-- origem;
-- habitat;
-- parte utilizada;
-- cultivo e cuidados;
-- usos ou observações;
-- descrição;
-- curiosidades;
-- imagem opcional da planta.
+Atualmente, o Herbário permite:
 
-As funções principais são:
+* cadastrar plantas;
+* visualizar todas as plantas da coleção;
+* pesquisar pelo nome comum ou científico;
+* consultar a ficha completa de uma planta;
+* editar registros existentes;
+* excluir plantas;
+* adicionar uma imagem ao registro;
+* armazenar permanentemente os dados no MySQL.
 
-1. **Cadastrar:** o formulário recebe os dados e salva uma nova planta no banco.
-2. **Listar:** a página inicial mostra todas as plantas cadastradas em cartões.
-3. **Pesquisar:** a busca procura no nome comum e no nome científico, sem diferenciar letras maiúsculas e minúsculas.
-4. **Ver detalhes:** cada cartão abre o registro completo da planta.
-5. **Editar:** as informações podem ser corrigidas ou complementadas depois do cadastro.
-6. **Excluir:** um registro pode ser removido com confirmação.
-7. **Cadastrar imagem:** o formulário aceita PNG, JPG, WEBP ou GIF de até 4 MB. A imagem é transformada em texto Base64 e armazenada junto com o registro no MySQL.
+Cada planta pode conter:
 
-Quando uma planta recebe toxicidade **Alta**, o site mostra o destaque **“Veneno absoluto!”**. Esse efeito é apenas uma escolha visual para a apresentação e depende do valor preenchido no cadastro.
+* nome comum;
+* nome científico;
+* categoria;
+* nível de toxicidade;
+* origem;
+* habitat;
+* parte utilizada;
+* cultivo e cuidados;
+* usos ou observações;
+* descrição;
+* curiosidades;
+* imagem.
 
-## Tecnologias usadas
+Quando uma planta recebe o nível de toxicidade **Alta**, a interface também exibe o destaque **“Veneno absoluto!”**. Esse aviso faz parte da identidade visual da aplicação e é determinado pelo valor informado no cadastro.
 
-### Java e Spring Boot
+---
 
-O Java concentra as regras da aplicação. O Spring Boot inicia o servidor web, organiza os componentes e facilita a conexão entre as páginas, o código Java e o banco.
+## ✦ Como funciona
 
-### Spring MVC
+O Herbário é uma aplicação web desenvolvida em **Java com Spring Boot**.
 
-O padrão MVC separa as responsabilidades:
+O navegador exibe as páginas da aplicação, enquanto o Spring Boot processa as ações realizadas pelo usuário e se comunica com o banco MySQL.
 
-- **Model:** representa os dados de uma planta. É a classe `Planta.java`.
-- **View:** são as páginas HTML com Thymeleaf.
-- **Controller:** recebe as ações do navegador e decide o que deve acontecer. É a classe `PlantaController.java`.
+De forma simplificada:
 
-### Thymeleaf
+```text
+Usuário
+   ↓
+Interface HTML + CSS
+   ↓
+Thymeleaf
+   ↓
+Spring Boot / Java
+   ↓
+JPA + Hibernate
+   ↓
+MySQL
+```
 
-Thymeleaf permite misturar HTML com informações que vêm do Java. Por exemplo, a página inicial percorre a lista de plantas recebida pelo controlador e cria um cartão para cada registro.
+Por exemplo, ao cadastrar uma planta:
 
-### JPA e Hibernate
+```text
+Preenchimento do formulário
+          ↓
+POST /plantas
+          ↓
+PlantaController
+          ↓
+PlantaRepository
+          ↓
+Hibernate / JPA
+          ↓
+MySQL
+          ↓
+Página da planta cadastrada
+```
 
-JPA é a forma usada pelo projeto para transformar objetos Java em registros de banco. O Hibernate, que é a implementação usada pelo Spring Boot, cria e atualiza a tabela conforme a entidade `Planta`.
+Isso significa que o projeto não é apenas um conjunto de páginas HTML: os registros são processados pelo backend e armazenados em um banco de dados.
 
-Por isso, no controlador, uma operação como:
+---
+
+# Tecnologias
+
+## Java + Spring Boot
+
+O **Java** contém a lógica principal da aplicação.
+
+O **Spring Boot** é responsável por executar o servidor web e integrar os diferentes componentes do sistema.
+
+---
+
+## Spring MVC
+
+A aplicação segue a estrutura MVC (*Model–View–Controller*), separando as responsabilidades do código:
+
+**Model — `Planta.java`**
+Representa uma planta e define quais informações podem ser armazenadas.
+
+**View — templates HTML**
+Representa as páginas que aparecem no navegador.
+
+**Controller — `PlantaController.java`**
+Recebe as requisições do navegador e determina o que a aplicação deve fazer.
+
+---
+
+## Thymeleaf
+
+O **Thymeleaf** conecta as páginas HTML aos dados enviados pelo Java.
+
+Na página inicial, por exemplo, ele percorre a lista de plantas recebida do backend e gera automaticamente um cartão para cada registro encontrado.
+
+---
+
+## JPA + Hibernate
+
+O projeto utiliza **JPA** para relacionar os objetos Java aos registros do banco de dados.
+
+O **Hibernate**, utilizado pelo Spring Boot como implementação da JPA, transforma operações realizadas no Java em comandos para o MySQL.
+
+Por isso, uma operação como:
 
 ```java
 repository.save(planta);
 ```
 
-salva o objeto no MySQL sem precisar escrever manualmente um `INSERT` para cada cadastro.
+pode criar ou atualizar um registro no banco sem ser necessário escrever manualmente um comando `INSERT` ou `UPDATE`.
 
-### MySQL
+---
 
-O MySQL guarda os dados de forma permanente. O banco usado pelo projeto se chama `herbario_apotecaria` e a tabela principal se chama `plantas`.
+## MySQL
 
-### HTML e CSS
+O **MySQL** é responsável pela persistência das informações.
 
-O HTML organiza o conteúdo das páginas. O CSS define a identidade visual do herbário: cores escuras de jardim, papel claro, tipografia editorial, ilustrações e adaptação para telas menores.
-
-As imagens da Maomao usadas como pequenos detalhes foram incluídas como PNG com fundo transparente. O GIF do jardim aparece na abertura do catálogo.
-
-## Como o sistema funciona
-
-O fluxo de um cadastro é:
+O banco utilizado pelo projeto é:
 
 ```text
-Pessoa preenche o formulário
-            ↓
-Thymeleaf envia um POST para /plantas
-            ↓
-PlantaController recebe e valida os dados
-            ↓
-PlantaRepository salva o objeto
-            ↓
-Hibernate converte o objeto em SQL
-            ↓
-MySQL guarda o registro
-            ↓
-O navegador abre a página de detalhes
+herbario_apotecaria
 ```
 
-O fluxo da pesquisa é parecido. A pessoa digita um termo na página inicial, o controlador consulta o repositório pelo nome comum ou científico e devolve somente os registros correspondentes para `index.html`.
+A tabela principal é:
 
-## Principais rotas
+```text
+plantas
+```
 
-| Rota | Método | Função |
-| --- | --- | --- |
-| `/` | GET | Lista as plantas e realiza a pesquisa |
-| `/plantas/nova` | GET | Abre o formulário de cadastro |
-| `/plantas` | POST | Salva uma nova planta |
-| `/plantas/{id}` | GET | Mostra os detalhes de uma planta |
-| `/plantas/{id}/editar` | GET | Abre um registro para edição |
-| `/plantas/{id}` | POST | Atualiza um registro existente |
-| `/plantas/{id}/excluir` | POST | Exclui um registro |
+Como os registros ficam armazenados no banco, fechar a aplicação não apaga a coleção cadastrada.
 
-## Estrutura do projeto
+---
+
+## HTML + CSS
+
+O **HTML** organiza o conteúdo das páginas e o **CSS** define a interface visual.
+
+A identidade do Herbário utiliza elementos inspirados em cadernos botânicos e na estética de *Diários de uma Apotecária*, incluindo tons de jardim, papel claro, tipografia editorial e ilustrações decorativas.
+
+A interface também possui adaptações para diferentes tamanhos de tela.
+
+---
+
+# Rotas principais
+
+| Rota                    | Método | Função                                      |
+| ----------------------- | ------ | ------------------------------------------- |
+| `/`                     | `GET`  | Exibe a coleção e permite pesquisar plantas |
+| `/plantas/nova`         | `GET`  | Abre o formulário de cadastro               |
+| `/plantas`              | `POST` | Cadastra uma nova planta                    |
+| `/plantas/{id}`         | `GET`  | Exibe a ficha completa de uma planta        |
+| `/plantas/{id}/editar`  | `GET`  | Abre uma planta para edição                 |
+| `/plantas/{id}`         | `POST` | Salva as alterações de uma planta           |
+| `/plantas/{id}/excluir` | `POST` | Exclui uma planta                           |
+
+---
+
+# Estrutura do projeto
 
 ```text
 herbario-da-apotecaria/
 ├── pom.xml
 ├── banco.sql
 ├── README.md
+│
 └── src/main/
     ├── java/br/com/herbario/
     │   ├── HerbarioApplication.java
-    │   ├── controller/PlantaController.java
-    │   ├── model/Planta.java
-    │   └── repository/PlantaRepository.java
+    │   ├── controller/
+    │   │   └── PlantaController.java
+    │   ├── model/
+    │   │   └── Planta.java
+    │   └── repository/
+    │       └── PlantaRepository.java
+    │
     └── resources/
         ├── application.properties
+        │
         ├── templates/
         │   ├── index.html
         │   ├── formulario.html
         │   └── detalhes.html
+        │
         └── static/
-            ├── css/style.css
+            ├── css/
+            │   └── style.css
             └── media/
 ```
 
-## Como executar
+### Arquivos principais
 
-### Requisitos
+**`HerbarioApplication.java`**
+Ponto de entrada da aplicação. É a classe que inicia o Spring Boot.
 
-- Java 17 ou mais recente;
-- Maven 3.6.3 ou mais recente, ou uma IDE com suporte a Maven;
-- MySQL Server em execução.
+**`Planta.java`**
+Define a estrutura de uma planta e seu relacionamento com a tabela do banco.
 
-### Preparar o banco
+**`PlantaController.java`**
+Controla cadastro, pesquisa, visualização, edição e exclusão.
 
-1. Abra o MySQL Workbench.
-2. Execute o arquivo `banco.sql`.
+**`PlantaRepository.java`**
+Faz a comunicação entre a aplicação e os registros armazenados no MySQL.
 
-Esse arquivo cria o banco `herbario_apotecaria`. A tabela `plantas` é criada e atualizada pelo JPA quando a aplicação inicia.
+**`application.properties`**
+Contém as configurações da aplicação e da conexão com o banco.
 
-### Configurar a conexão
+**`templates/`**
+Contém as páginas HTML processadas pelo Thymeleaf.
 
-Abra:
+**`static/`**
+Contém CSS, imagens e outros arquivos estáticos da interface.
+
+---
+
+# Executando localmente
+
+## Requisitos
+
+Para executar o projeto, é necessário ter:
+
+* Java 17 ou superior;
+* MySQL Server;
+* Maven 3.6.3 ou superior, ou utilizar o Maven Wrapper incluído no projeto.
+
+---
+
+## 1. Preparar o banco
+
+Com o MySQL em execução, execute:
 
 ```text
-src/main/resources/application.properties
+banco.sql
 ```
 
-A configuração padrão usa o usuário `root` e senha vazia. Se o seu MySQL tiver uma senha, altere:
-
-```properties
-spring.datasource.username=root
-spring.datasource.password=SUA_SENHA
-```
-
-Também é possível configurar por variáveis de ambiente:
+O script cria o banco:
 
 ```text
+herbario_apotecaria
+```
+
+A estrutura da tabela `plantas` é gerenciada pelo Hibernate quando a aplicação é iniciada.
+
+---
+
+## 2. Configurar a conexão
+
+A aplicação utiliza variáveis de ambiente para permitir que as credenciais do banco permaneçam fora do código.
+
+As variáveis disponíveis são:
+
+```text
+DB_URL
 DB_USER
 DB_PASSWORD
-DB_URL
 ```
 
-### Iniciar pela IDE
+A configuração padrão aponta para:
 
-1. Abra a pasta que contém `pom.xml`.
-2. Espere a IDE baixar as dependências do Maven.
-3. Abra `HerbarioApplication.java`.
-4. Clique em **Run**.
-5. Acesse `http://localhost:8080`.
+```text
+jdbc:mysql://localhost:3306/herbario_apotecaria
+```
 
-### Iniciar pelo terminal
+e utiliza:
 
-No terminal, dentro da pasta que contém o `pom.xml`, execute:
+```text
+DB_USER=root
+```
+
+Defina `DB_PASSWORD` de acordo com a senha configurada no seu MySQL.
+
+> Nunca adicione senhas ou outras credenciais diretamente ao repositório.
+
+---
+
+## 3. Iniciar a aplicação
+
+### Usando uma IDE
+
+Abra a pasta que contém `pom.xml`, aguarde o carregamento das dependências e execute:
+
+```text
+HerbarioApplication.java
+```
+
+Depois acesse:
+
+```text
+http://localhost:8080
+```
+
+### Usando o Maven Wrapper
+
+No Windows:
+
+```bash
+./mvnw.cmd spring-boot:run
+```
+
+No Linux ou macOS:
+
+```bash
+./mvnw spring-boot:run
+```
+
+Também é possível utilizar uma instalação local do Maven:
 
 ```bash
 mvn spring-boot:run
 ```
 
-Para apenas verificar se o projeto compila:
+---
 
-```bash
-mvn clean package -DskipTests
-```
+# Imagens
 
-Se a porta 8080 estiver ocupada, acrescente ao `application.properties`:
+O formulário permite adicionar imagens nos formatos:
 
-```properties
-server.port=8081
-```
+* PNG;
+* JPG/JPEG;
+* WEBP;
+* GIF.
 
-Nesse caso, abra `http://localhost:8081`.
+O limite atual é de **4 MB por arquivo**.
 
-## Roteiro para testar e apresentar
-
-Uma demonstração curta pode seguir esta ordem:
-
-1. Cadastre **Camomila**, preenchendo os campos principais e uma imagem.
-2. Mostre o registro completo e explique que os dados vieram do banco.
-3. Volte para a coleção e pesquise `Camomila`.
-4. Cadastre **Beladona** com toxicidade alta para mostrar o aviso “Veneno absoluto!”.
-5. Edite um campo da Camomila e salve.
-6. Feche e abra novamente a aplicação para mostrar que os dados continuam armazenados.
-7. Exclua um registro e confirme que ele desaparece da coleção.
-
-Para conferir diretamente no banco:
-
-```sql
-USE herbario_apotecaria;
-SELECT * FROM plantas;
-```
-
-## Relação com a atividade
-
-O requisito de **pesquisar e armazenar dados** aparece na pesquisa por nome e no cadastro persistido no MySQL. A conexão é demonstrada pelo Spring Boot consultando e gravando na tabela `plantas`. A interface é feita em HTML e CSS, com páginas separadas para coleção, cadastro e detalhes. A parte de codificação inclui as rotas, validação, CRUD, busca, upload de imagem e integração com o banco.
-
-## Observação sobre o conteúdo
-
-Este é um projeto escolar e as informações sobre usos e toxicidade servem apenas para preencher e demonstrar o catálogo. Elas não substituem orientação médica, farmacêutica ou botânica.
-
-As ilustrações foram usadas como referências visuais para esta apresentação escolar. Caso o site seja publicado, é preciso verificar as autorizações de uso das imagens.
+Na versão 1.0, a imagem é convertida para Base64 e armazenada junto ao registro da planta no banco de dados.
 
 ---
 
-**Herbário da Apotecária** · © 2026 Catharine Toso Taques
+# Origem do projeto
+
+O Herbário da Apotecária foi criado inicialmente para um trabalho acadêmico que exigia o desenvolvimento de uma aplicação web capaz de **pesquisar e armazenar dados**, utilizando HTML e CSS e integração com banco de dados.
+
+A primeira versão implementa esses requisitos por meio de:
+
+* operações CRUD;
+* pesquisa;
+* persistência com MySQL;
+* conexão com banco através de JPA/Hibernate;
+* backend em Java;
+* interface web com Thymeleaf;
+* upload de imagens.
+
+Depois da entrega acadêmica, o projeto passou a ser desenvolvido como um projeto pessoal, com a intenção de transformá-lo em um **caderno botânico digital mais completo**.
+
+---
+
+# Versões
+
+### v1.0 — Versão acadêmica
+
+Primeira versão funcional do Herbário.
+
+**Stack:** Java · Spring Boot · Thymeleaf · JPA/Hibernate · MySQL · HTML · CSS
+
+Esta versão contém o catálogo de plantas, pesquisa, CRUD e armazenamento de imagens.
+
+### Próximas versões
+
+O projeto está sendo expandido para explorar funcionalidades de um caderno botânico pessoal, como registros de observações, coleções, fotografias e organização mais avançada das plantas.
+
+---
+
+# Aviso sobre informações botânicas
+
+O Herbário da Apotecária é um projeto de software.
+
+Informações cadastradas sobre toxicidade, propriedades, cultivo ou usos de plantas são fornecidas pelos próprios registros adicionados à aplicação e **não devem ser interpretadas como orientação médica, farmacêutica ou botânica profissional**.
+
+---
+
+# Créditos e direitos de imagem
+
+A versão acadêmica utiliza alguns elementos visuais inspirados em *Diários de uma Apotecária* (*The Apothecary Diaries / Kusuriya no Hitorigoto*).
+
+Esses elementos pertencem aos seus respectivos detentores de direitos e foram utilizados apenas no contexto da apresentação acadêmica. Eles não são de autoria deste projeto.
+
+Uma versão destinada à publicação oficial deverá utilizar recursos visuais próprios ou devidamente licenciados.
+
+---
+
+**Herbário da Apotecária**
+© 2026 Catharine Toso Taques
